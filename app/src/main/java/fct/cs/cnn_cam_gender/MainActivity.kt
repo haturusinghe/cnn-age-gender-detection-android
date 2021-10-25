@@ -12,13 +12,11 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import androidx.navigation.ui.AppBarConfiguration
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import fct.cs.cnn_cam_gender.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
@@ -46,6 +44,12 @@ class MainActivity : AppCompatActivity() {
     private var useNNApi : Boolean = false
     private var useGpu : Boolean = false
 
+    private lateinit var genderOutputTextView : TextView
+    private lateinit var inferenceSpeedTextView : TextView
+
+    private lateinit var takePhoteBtn : FloatingActionButton
+    private lateinit var selectImgBtn : FloatingActionButton
+
     private val coroutineScope = CoroutineScope( Dispatchers.Main )
 
     lateinit var genderModelInterpreter: Interpreter
@@ -67,11 +71,20 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        takePhoteBtn = binding.btnTakePhoto
+        selectImgBtn = binding.btnSelectImg
+
+        takePhoteBtn.isEnabled = false
+        takePhoteBtn.isClickable = false
+
+        selectImgBtn.isEnabled = false
+        selectImgBtn.isClickable = false
+
 //        val navController = findNavController(R.id.nav_host_fragment_content_main)
 //        appBarConfiguration = AppBarConfiguration(navController.graph)
 //        setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
+        binding.btnTakePhoto.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
             openCamera(view)
@@ -90,6 +103,8 @@ class MainActivity : AppCompatActivity() {
         val useGPUCheckBox : CheckBox = (binding.useGPUCheckbox)
         val initModelButton : Button = (binding.initModelButton)
         sampleImageView = binding.iv
+        genderOutputTextView = binding.genderOutputTextview
+        inferenceSpeedTextView = binding.inferenceSpeedTextView
 
         // Check for NNAPI and GPUDelegate compatibility.
         if ( Build.VERSION.SDK_INT < Build.VERSION_CODES.P ) {
@@ -158,7 +173,6 @@ class MainActivity : AppCompatActivity() {
                 || super.onSupportNavigateUp()
     }*/
 
-    // Suspending function to initialize the TFLite interpreters.
     private suspend fun initModels(options: Interpreter.Options) = withContext( Dispatchers.Default ) {
         genderModelInterpreter = Interpreter(FileUtil.loadMappedFile( applicationContext , modelFilename[1]), options )
         withContext( Dispatchers.Main ){
@@ -167,6 +181,12 @@ class MainActivity : AppCompatActivity() {
             }
             // Notify the user once the models have been initialized.
             Toast.makeText( applicationContext , "Models initialized." , Toast.LENGTH_LONG ).show()
+
+            takePhoteBtn.isEnabled = true
+            takePhoteBtn.isClickable = true
+
+            selectImgBtn.isEnabled = true
+            selectImgBtn.isClickable = true
         }
     }
 
@@ -181,7 +201,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    // Create a temporary file, for storing the full-sized picture taken by the user.
     private fun createImageFile() : File {
         val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile("image", ".jpg", imagesDir).apply {
@@ -189,7 +208,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Dispatch an Intent which opens the gallery application for the user.
     private fun dispatchSelectPictureIntent() {
         val selectPictureIntent = Intent( Intent.ACTION_OPEN_DOCUMENT ).apply {
             type = "image/*"
@@ -257,6 +275,18 @@ class MainActivity : AppCompatActivity() {
     }
     private fun detectFaces(image: Bitmap) {
         sampleImageView.setImageBitmap(image);
+
+        coroutineScope.launch {
+            // Predict the age and the gender.
+            val gender = genderClassificationModel.predictGender(image)
+
+            // Show the inference time to the user via `inferenceSpeedTextView`.
+            inferenceSpeedTextView.text = "Gender Detection model inference time : ${genderClassificationModel.inferenceTime} ms"
+
+            // Show the final output to the user.
+            genderOutputTextView.text = if ( gender[ 0 ] > gender[ 1 ] ) { "Male" } else { "Female" }
+            progressDialog.dismiss()
+        }
     }
 
 }
