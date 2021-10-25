@@ -77,4 +77,13 @@
         android:layout_marginBottom="16dp"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_select_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="16dp"
+        app:srcCompat="@android:drawable/ic_menu_report_image" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

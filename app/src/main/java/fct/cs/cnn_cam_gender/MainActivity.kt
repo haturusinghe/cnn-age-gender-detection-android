@@ -77,6 +77,10 @@ class MainActivity : AppCompatActivity() {
             openCamera(view)
         }
 
+        binding.btnSelectImg.setOnClickListener { view ->
+            selectImage(view)
+        }
+
         // A ProgressDialog to notify the user that the images are being processed.
         progressDialog = ProgressDialog( this )
         progressDialog.setCancelable( false )
@@ -90,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         // Check for NNAPI and GPUDelegate compatibility.
         if ( Build.VERSION.SDK_INT < Build.VERSION_CODES.P ) {
             useNNApiCheckBox.isEnabled = false
-            useNNApiCheckBox.text = "Use NNAPI ( NNAPI is Not available as Device)"
+            useNNApiCheckBox.text = "Use NNAPI ( NNAPI is not available on this Device)"
             useNNApi = false
         }
         if ( !compatList.isDelegateSupportedOnThisDevice ){
