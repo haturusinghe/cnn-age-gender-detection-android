@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.navigation.ui.AppBarConfiguration
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import fct.cs.cnn_cam_gender.databinding.ActivityMainBinding
@@ -34,7 +33,6 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var sampleImageView : ImageView
@@ -80,9 +78,6 @@ class MainActivity : AppCompatActivity() {
         selectImgBtn.isEnabled = false
         selectImgBtn.isClickable = false
 
-//        val navController = findNavController(R.id.nav_host_fragment_content_main)
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.btnTakePhoto.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -141,37 +136,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // `onClick` method for R.id.button
     fun openCamera( v: View) {
         dispatchTakePictureIntent()
     }
 
-    // `onClick` method for R.id.button2
+
     fun selectImage( v : View) {
         dispatchSelectPictureIntent()
     }
-
-/*    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
-                || super.onSupportNavigateUp()
-    }*/
 
     private suspend fun initModels(options: Interpreter.Options) = withContext( Dispatchers.Default ) {
         genderModelInterpreter = Interpreter(FileUtil.loadMappedFile( applicationContext , modelFilename[1]), options )
@@ -216,8 +188,6 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult( selectPictureIntent , REQUEST_IMAGE_SELECT )
     }
 
-    // Dispatch an Intent which opens the camera application for the user.
-    // The code is from -> https://developer.android.com/training/camera/photobasics#TaskPath
     private fun dispatchTakePictureIntent() {
         val takePictureIntent = Intent( MediaStore.ACTION_IMAGE_CAPTURE )
         if ( takePictureIntent.resolveActivity( packageManager ) != null ) {
@@ -277,14 +247,11 @@ class MainActivity : AppCompatActivity() {
         sampleImageView.setImageBitmap(image);
 
         coroutineScope.launch {
-            // Predict the age and the gender.
             val gender = genderClassificationModel.predictGender(image)
 
-            // Show the inference time to the user via `inferenceSpeedTextView`.
             inferenceSpeedTextView.text = "Gender Detection model inference time : ${genderClassificationModel.inferenceTime} ms"
 
-            // Show the final output to the user.
-            genderOutputTextView.text = if ( gender[ 0 ] > gender[ 1 ] ) { "Male" } else { "Female" }
+            genderOutputTextView.text = if ( gender[ 0 ] > gender[ 1 ] ) { "Gender : Male" } else { "Gender : Female" }
             progressDialog.dismiss()
         }
     }
