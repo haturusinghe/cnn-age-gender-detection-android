@@ -27,6 +27,17 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/age_output_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Age : "
+            app:layout_constraintBottom_toTopOf="@+id/useGPU_checkbox"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/init_model_button" />
+
+        <TextView
             android:id="@+id/inference_speed_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

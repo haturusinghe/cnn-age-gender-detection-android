@@ -29,6 +29,7 @@ import org.tensorflow.lite.nnapi.NnApiDelegate
 import org.tensorflow.lite.support.common.FileUtil
 import java.io.File
 import java.io.IOException
+import kotlin.math.floor
 
 
 class MainActivity : AppCompatActivity() {
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity() {
     private var useGpu : Boolean = false
 
     private lateinit var genderOutputTextView : TextView
+    private lateinit var ageOutputTextView : TextView
+
     private lateinit var inferenceSpeedTextView : TextView
 
     private lateinit var takePhoteBtn : FloatingActionButton
@@ -51,7 +54,10 @@ class MainActivity : AppCompatActivity() {
     private val coroutineScope = CoroutineScope( Dispatchers.Main )
 
     lateinit var genderModelInterpreter: Interpreter
+    lateinit var ageModelInterpreter: Interpreter
+
     private lateinit var genderClassificationModel: GenderClassificationModel
+    private lateinit var ageEstimationModel: AgeEstimationModel
 
     private val compatList = CompatibilityList()
 
@@ -99,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         val initModelButton : Button = (binding.initModelButton)
         sampleImageView = binding.iv
         genderOutputTextView = binding.genderOutputTextview
+        ageOutputTextView = binding.ageOutputTextView
         inferenceSpeedTextView = binding.inferenceSpeedTextView
 
         // Check for NNAPI and GPUDelegate compatibility.
@@ -140,17 +147,24 @@ class MainActivity : AppCompatActivity() {
         dispatchTakePictureIntent()
     }
 
-
     fun selectImage( v : View) {
         dispatchSelectPictureIntent()
     }
 
     private suspend fun initModels(options: Interpreter.Options) = withContext( Dispatchers.Default ) {
         genderModelInterpreter = Interpreter(FileUtil.loadMappedFile( applicationContext , modelFilename[1]), options )
+        ageModelInterpreter = Interpreter(FileUtil.loadMappedFile( applicationContext , modelFilename[0]), options )
+
         withContext( Dispatchers.Main ){
             genderClassificationModel = GenderClassificationModel().apply {
                 interpreter = genderModelInterpreter
             }
+
+            ageEstimationModel = AgeEstimationModel().apply {
+                interpreter = ageModelInterpreter
+            }
+
+
             // Notify the user once the models have been initialized.
             Toast.makeText( applicationContext , "Models initialized." , Toast.LENGTH_LONG ).show()
 
@@ -172,6 +186,11 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        ageModelInterpreter.close()
+        genderModelInterpreter.close()
+    }
 
     private fun createImageFile() : File {
         val imagesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -248,9 +267,12 @@ class MainActivity : AppCompatActivity() {
 
         coroutineScope.launch {
             val gender = genderClassificationModel.predictGender(image)
+            val age = ageEstimationModel.predictAge(image)
 
-            inferenceSpeedTextView.text = "Gender Detection model inference time : ${genderClassificationModel.inferenceTime} ms"
+            inferenceSpeedTextView.text = "Age Detection model inference time : ${ageEstimationModel.inferenceTime} ms \n" +
+                    "Gender Detection model inference time : ${ageEstimationModel.inferenceTime} ms"
 
+            ageOutputTextView.text = floor( age.toDouble() ).toInt().toString()
             genderOutputTextView.text = if ( gender[ 0 ] > gender[ 1 ] ) { "Gender : Male" } else { "Gender : Female" }
             progressDialog.dismiss()
         }
