@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     private val compatList = CompatibilityList()
 
-    private var modelFilename = arrayOf( "model_age_q.tflite", "model_gender_q.tflite" )
+    private var modelFilename = arrayOf( "model_age_vN_nonq.tflite", "model_gender_nonq.tflite" )
 
     // For reading the full-sized picture
     private val REQUEST_IMAGE_CAPTURE = 101
