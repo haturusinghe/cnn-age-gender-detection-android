@@ -31,11 +31,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Age : "
-            app:layout_constraintBottom_toTopOf="@+id/useGPU_checkbox"
+            app:layout_constraintBottom_toTopOf="@+id/init_model_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/init_model_button" />
+            app:layout_constraintHorizontal_bias="0.368"
+            app:layout_constraintStart_toEndOf="@+id/gender_output_textview"
+            app:layout_constraintTop_toBottomOf="@+id/iv"
+            app:layout_constraintVertical_bias="0.585" />
 
         <TextView
             android:id="@+id/inference_speed_textView"
@@ -44,9 +45,9 @@
             android:text="Inference Time: "
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/useGPU_checkbox" />
+            app:layout_constraintTop_toBottomOf="@+id/useGPU_checkbox"
+            app:layout_constraintVertical_bias="0.718" />
 
         <ImageView
             android:id="@+id/iv"
@@ -66,9 +67,10 @@
             android:text="Init Models"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.572" />
 
         <CheckBox
             android:id="@+id/useGPU_checkbox"
@@ -99,9 +101,10 @@
             android:text="Gender : "
             app:layout_constraintBottom_toTopOf="@+id/init_model_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.335"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv" />
+            app:layout_constraintTop_toBottomOf="@+id/iv"
+            app:layout_constraintVertical_bias="0.609" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_select_img"
