@@ -33,7 +33,7 @@
             android:text="Age : "
             app:layout_constraintBottom_toTopOf="@+id/init_model_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.368"
+            app:layout_constraintHorizontal_bias="0.298"
             app:layout_constraintStart_toEndOf="@+id/gender_output_textview"
             app:layout_constraintTop_toBottomOf="@+id/iv"
             app:layout_constraintVertical_bias="0.585" />
@@ -55,9 +55,10 @@
             android:layout_height="270dp"
             app:layout_constraintBottom_toTopOf="@+id/init_model_button"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.314"
             tools:srcCompat="@tools:sample/avatars" />
 
         <Button

@@ -272,7 +272,7 @@ class MainActivity : AppCompatActivity() {
             inferenceSpeedTextView.text = "Age Detection model inference time : ${ageEstimationModel.inferenceTime} ms \n" +
                     "Gender Detection model inference time : ${ageEstimationModel.inferenceTime} ms"
 
-            ageOutputTextView.text = floor( age.toDouble() ).toInt().toString()
+            ageOutputTextView.text = "Age : "  + floor( age.toDouble() ).toInt().toString()
             genderOutputTextView.text = if ( gender[ 0 ] > gender[ 1 ] ) { "Gender : Male" } else { "Gender : Female" }
             progressDialog.dismiss()
         }
