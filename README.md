@@ -28,6 +28,7 @@ An Android application that uses TensorFlow Lite models to detect age and gender
   - TFLite delegates (GPU, NNAPI) for acceleration
 
 ## Models
+Refer to my [CNN Age Gender Detection](https://github.com/haturusinghe/cnn-age-gender) repo for model implementations
 
 The application uses two TensorFlow Lite models:
 - Age Estimation Model (`model_age_vN_nonq.tflite`)
